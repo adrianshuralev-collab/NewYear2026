@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>С Новым Годом!</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: linear-gradient(to bottom, #e0f7fa, #b3e5fc);
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .screen {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    #menu-screen h1 {
+      font-size: 6vw;
+      color: #01579b;
+      text-align: center;
+      margin-bottom: 5vh;
+      max-width: 90%;
+    }
+
+    #menu-screen button {
+      padding: 4vw 8vw;
+      font-size: 5vw;
+      background: #0288d1;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: background 0.3s;
+    }
+
+    #menu-screen button:hover {
+      background: #0277bd;
+    }
+
+    .snow {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    #main-title {
+      font-size: 7vw;
+      color: #01579b;
+      text-align: center;
+      margin-top: 3vh;
+      opacity: 0;
+      transition: opacity 2s ease-in;
+      max-width: 90%;
+    }
+
+    #wishes {
+      font-size: 6vw;
+      color: #0288d1;
+      text-align: center;
+      margin: 3vh 0;
+      min-height: 8vh;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      max-width: 90%;
+    }
+
+    #tree {
+      width: 60vw;
+      height: 80vw;
+      position: relative;
+      margin-bottom: 4vh;
+    }
+
+    .triangle {
+      width: 0;
+      height: 0;
+      border-left: 30vw solid transparent;
+      border-right: 30vw solid transparent;
+      position: absolute;
+      color: #2e7d32;
+    }
+    .t1 { border-bottom: 24vw solid #2e7d32; top: 0; }
+    .t2 { border-bottom: 27vw solid #2e7d32; top: 18vw; }
+    .t3 { border-bottom: 30vw solid #2e7d32; top: 39vw; }
+
+    .trunk {
+      width: 9vw;
+      height: 12vw;
+      background: #5d4037;
+      position: absolute;
+      top: 72vw;
+      left: 25.5vw;
+    }
+
+    #main-content {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    #music {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="menu-screen" class="screen">
+    <h1>Для вас новое сообщение!</h1>
+    <button id="start-btn">Получить сообщение</button>
+  </div>
+
+  <div id="main-content" class="screen">
+    <h1 id="main-title">С Новым Годом!</h1>
+    <div id="wishes"></div>
+    <div id="tree">
+      <div class="triangle t1"></div>
+      <div class="triangle t2"></div>
+      <div class="triangle t3"></div>
+      <div class="trunk"></div>
+    </div>
+  </div>
+
+  <audio id="music" loop>
+    <source src="new-year-song.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const UNLOCK_TIME = new Date('2025-12-31T23:55:00');
+
+    const wishes = [
+      "Счастья!",
+      "Здоровья!",
+      "Удачи!",
+      "Хорошего настроения!",
+      "Любви!",
+      "Тепла в доме!",
+      "Исполнения желаний!",
+      "Верных друзей!",
+      "Семейного уюта!",
+      "Финансового благополучия!",
+      "Новых возможностей!",
+      "Вдохновения каждый день!",
+      "Сил и энергии!",
+      "Красивых моментов!",
+      "Путешествий и открытий!",
+      "Спокойствия в душе!",
+      "Радости в мелочах!",
+      "Ярких праздников!",
+      "Добра и взаимопонимания!",
+      "И всего самого наилучшего!"
+    ];
+
+    const wishesEl = document.getElementById('wishes');
+    let index = 0;
+
+    function showNextWish() {
+      if (index >= wishes.length) return;
+      wishesEl.style.opacity = '0';
+      setTimeout(() => {
+        wishesEl.textContent = wishes[index];
+        wishesEl.style.opacity = '1';
+        index++;
+        setTimeout(showNextWish, 3000);
+      }, 1000);
+    }
+
+    function createSnow() {
+      const snowflake = document.createElement('div');
+      snowflake.classList.add('snow');
+      const size = Math.random() * 8 + 3;
+      snowflake.style.width = `${size}px`;
+      snowflake.style.height = `${size}px`;
+      snowflake.style.left = `${Math.random() * 100}vw`;
+      snowflake.style.top = '-10px';
+      snowflake.style.opacity = Math.random() * 0.5 + 0.3;
+      document.body.appendChild(snowflake);
+
+      const fallDuration = Math.random() * 5 + 5;
+      const fallDistance = window.innerHeight + 20;
+      snowflake.animate(
+        [
+          { transform: 'translateY(0) rotate(0deg)' },
+          { transform: `translateY(${fallDistance}px) rotate(${360 * (Math.random() > 0.5 ? 1 : -1)}deg)` }
+        ],
+        {
+          duration: fallDuration * 1000,
+          easing: 'linear'
+        }
+      ).onfinish = () => snowflake.remove();
+    }
+
+    function startMainContent() {
+      const now = new Date();
+      if (now < UNLOCK_TIME) {
+        alert("Кудааа? Это на Новый год! В 23:55 приходи!");
+        return;
+      }
+
+      const menu = document.getElementById('menu-screen');
+      const main = document.getElementById('main-content');
+
+      menu.style.opacity = '0';
+      setTimeout(() => {
+        menu.style.visibility = 'hidden';
+        main.style.visibility = 'visible';
+        setTimeout(() => {
+          main.style.opacity = '1';
+
+          const music = document.getElementById('music');
+          music.volume = 0.3;
+          music.play().catch(() => {});
+
+          setTimeout(() => {
+            document.getElementById('main-title').style.opacity = '1';
+          }, 500);
+          setTimeout(showNextWish, 2500);
+          setInterval(createSnow, 400);
+        }, 50);
+      }, 500);
+    }
+
+    document.getElementById('start-btn').addEventListener('click', startMainContent);
+  </script>
+</body>
+</html>
